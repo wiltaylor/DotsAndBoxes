@@ -51,6 +51,9 @@ public class DotController : MonoBehaviour
 
         if (Up == GameController.Instance.FirstSelectedDot && GameController.Instance.FirstSelectedDot != null)
         {
+            if (JoinedUp)
+                return; 
+
             LineUp.renderer.enabled = true;
             JoinedUp = true;
             GameController.Instance.FirstSelectedDot.JoinedDown = true;
@@ -59,6 +62,9 @@ public class DotController : MonoBehaviour
 
         if (Down == GameController.Instance.FirstSelectedDot && GameController.Instance.FirstSelectedDot != null)
         {
+            if (JoinedDown)
+                return; 
+
             LineDown.renderer.enabled = true;
             JoinedDown = true;
             GameController.Instance.FirstSelectedDot.JoinedUp = true;
@@ -67,6 +73,9 @@ public class DotController : MonoBehaviour
 
         if (Left == GameController.Instance.FirstSelectedDot && GameController.Instance.FirstSelectedDot != null)
         {
+            if (JoinedLeft)
+                return; 
+
             LineLeft.renderer.enabled = true;
             JoinedLeft = true;
             GameController.Instance.FirstSelectedDot.JoinedRight = true;
@@ -75,6 +84,9 @@ public class DotController : MonoBehaviour
 
         if (Right == GameController.Instance.FirstSelectedDot && GameController.Instance.FirstSelectedDot != null)
         {
+            if (JoinedRight)
+                return; 
+
             LineRight.renderer.enabled = true;
             JoinedRight = true;
             GameController.Instance.FirstSelectedDot.JoinedLeft = true;
