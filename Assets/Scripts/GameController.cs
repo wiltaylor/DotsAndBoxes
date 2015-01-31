@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Net.Mime;
+using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
 
@@ -16,16 +17,25 @@ public class GameController : MonoBehaviour
     public float lineOffSetY = 0.19f;
     public float WorldStartX = 0f;
     public float WorldStartY = 0f;
+    public float BoxOffsetX = 0.20f;
+    public float BoxOffsetY = 0.20f;
     public int CurrentPlayer = 1;
+
+    public Color Player1Colour = Color.blue;
+    public Color Player2Colour = Color.red;
+    public Camera MainCamera;
 
     public GameObject DotPrefab;
     public GameObject HorizontalLinePrefab;
     public GameObject VerticalLinePrefab;
+    public GameObject BoxPrefab;
 
     private DotController[,] DotArray;
     private GameObject[,] HorizontalLines;
     private GameObject[,] VerticalLines;
     private int[,] WonBoxes;
+    private GameObject[,] Boxes;
+    
 
     public void Start()
     {
@@ -39,7 +49,11 @@ public class GameController : MonoBehaviour
             return;
         }
 
+        MainCamera.backgroundColor = Player1Colour;
+
+
         WonBoxes = new int[Rows - 1,Cols - 1];
+        Boxes = new GameObject[Rows - 1, Cols - 1];
         DotArray = new DotController[Rows, Cols];
         HorizontalLines = new GameObject[Rows, Cols];
         VerticalLines = new GameObject[Rows, Cols];
@@ -102,6 +116,16 @@ public class GameController : MonoBehaviour
             }
         }
 
+        for (var x = 0; x < Cols - 1; x++)
+        {
+            for (var y = 0; y < Rows - 1; y++)
+            {
+                Boxes[x, y] = (GameObject)Instantiate(BoxPrefab);
+                Boxes[x, y].transform.position = new Vector3(WorldStartX + x * dotOffSetX + BoxOffsetX, WorldStartY + y * dotOffSetY + BoxOffsetY);
+                Boxes[x, y].transform.parent = transform;
+            }
+        }
+
     }
 
     public void DeselectDot()
@@ -134,6 +158,7 @@ public class GameController : MonoBehaviour
                     if (DotArray[x + 1, y + 1].JoinedDown && DotArray[x + 1, y + 1].JoinedLeft)
                     {
                         WonBoxes[x, y] = CurrentPlayer;
+                        Boxes[x, y].GetComponent<BoxController>().SetPlayer(CurrentPlayer);
                         HorizontalLines[x,y].GetComponent<LineController>().SetPlayerOwner(CurrentPlayer);
                         HorizontalLines[x,y + 1].GetComponent<LineController>().SetPlayerOwner(CurrentPlayer);
                         VerticalLines[x, y].GetComponent<LineController>().SetPlayerOwner(CurrentPlayer);
@@ -152,8 +177,11 @@ public class GameController : MonoBehaviour
         if (!NewBox)
         {
             CurrentPlayer = CurrentPlayer == 1 ? 2 : 1;
+            MainCamera.backgroundColor  = CurrentPlayer == 1 ? Player1Colour : Player2Colour;
 
             CurrentPlayerText.text = string.Format("Player {0}'s Turn!", CurrentPlayer);
+
+            
         }
 
         if (!freeSpaces)

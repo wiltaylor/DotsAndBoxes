@@ -36,6 +36,12 @@ public class DotController : MonoBehaviour
 
     public void OnMouseUpAsButton()
     {
+        if (GameController.Instance.FirstSelectedDot == this)
+        {
+            GameController.Instance.DeselectDot();
+            return;
+        }
+
         if (GameController.Instance.FirstSelectedDot == null)
         {
             SetSelect(true);
